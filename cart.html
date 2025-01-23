@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошик - Vape Shop</title>
+    <style>
+        /* Загальні стилі */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        /* Заголовок */
+        .header {
+            background-color: #2ecc71;
+            color: white;
+            padding: 20px 30px;
+            font-size: 2em;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #27ae60;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Стилі для кошика */
+        .cart-container {
+            padding: 40px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            border-radius: 12px;
+        }
+
+        /* Стилі для товарів у кошику */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            padding-left: 15px;
+        }
+
+        .cart-item-name {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .cart-item-price {
+            font-size: 1em;
+            color: #27ae60;
+        }
+
+        .cart-item-quantity {
+            font-size: 1em;
+            margin-left: 10px;
+            color: #888;
+        }
+
+        .cart-summary {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 1.2em;
+        }
+
+        .cart-summary .total-price {
+            font-weight: 700;
+            font-size: 1.5em;
+            color: #e74c3c;
+        }
+
+        /* Кнопки */
+        .cart-button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .cart-button:hover {
+            background-color: #27ae60;
+        }
+
+        .back-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Адаптивність */
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-summary {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Заголовок -->
+    <div class="header">
+        Кошик - Vape Shop
+    </div>
+
+    <div class="cart-container">
+        <!-- Секція товарів у кошику -->
+        <h2>Ваші Товари</h2>
+
+        <div id="cartItems"></div>
+
+        <div class="cart-summary">
+            <p>Загальна сума: <span id="totalPrice" class="total-price">0 грн</span></p>
+        </div>
+
+        <!-- Кнопка оформлення замовлення -->
+        <button class="cart-button" onclick="redirectToCheckout()">Оформити замовлення</button>
+
+        <!-- Кнопка повернення назад -->
+        <button class="back-button" onclick="goBack()">Повернутися назад</button>
+    </div>
+
+    <script>
+        // Тестові дані для кошика (перевірка, якщо кошик порожній)
+        if (localStorage.getItem('cart') === null) {
+            const testCart = [
+                {
+                    name: "Товар 1",
+                    price: "100",
+                    quantity: 2,
+                    image: "https://via.placeholder.com/80"
+                },
+                {
+                    name: "Товар 2",
+                    price: "150",
+                    quantity: 1,
+                    image: "https://via.placeholder.com/80"
+                }
+            ];
+            localStorage.setItem('cart', JSON.stringify(testCart)); // Додавання тестових товарів у localStorage
+        }
+
+        // Збереження кошика в localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Функція для оновлення кошика на сторінці
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+
+            // Очистити кошик
+            cartItemsContainer.innerHTML = '';
+
+            let totalPrice = 0;
+
+            cart.forEach((item, index) => {
+                const price = parseFloat(item.price);
+                const quantity = parseInt(item.quantity);
+
+                // Перевірка на правильність ціни та кількості
+                if (isNaN(price) || isNaN(quantity)) {
+                    return; // Якщо ціна або кількість некоректні, пропустити цей товар
+                }
+
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${price} грн</div>
+                        <div class="cart-item-quantity">Кількість: ${quantity}</div>
+                    </div>
+                    <div class="cart-item-remove">
+                        <button onclick="removeFromCart(${index})" style="color: #e74c3c; font-weight: bold;">X</button>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+                totalPrice += price * quantity; // Оновлення загальної суми
+            });
+
+            // Оновити загальну суму
+            if (!isNaN(totalPrice)) {
+                totalPriceElement.textContent = `${totalPrice.toFixed(2)} грн`; // Форматування до двох знаків після коми
+            } else {
+                totalPriceElement.textContent = '0 грн'; // Якщо сума не є числом
+            }
+        }
+
+        // Функція для видалення товару з кошика
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        // Функція для переходу на сторінку оформлення замовлення
+        function redirectToCheckout() {
+            if (cart.length > 0) {
+                window.location.href = "checkout.html";
+            } else {
+                alert("Ваш кошик порожній! Додайте товари для оформлення замовлення.");
+            }
+        }
+
+        // Функція для повернення на попередню сторінку
+        function goBack() {
+            window.history.back();
+        }
+
+        // Завантаження кошика при завантаженні сторінки
+        window.onload = function() {
+            updateCart();
+        };
+    </script>
+
+</body>
+</html>

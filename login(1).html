@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизація</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #3498db;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .back-to-home {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1em;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .back-to-home:hover {
+            text-decoration: underline;
+        }
+
+        .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1em;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+        .register-container {
+            display: none;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Контейнер для авторизації -->
+    <div class="login-container" id="loginContainer">
+        <h2>Авторизація</h2>
+        
+        <!-- Форма для авторизації -->
+        <div class="input-group">
+            <label for="username">Логін</label>
+            <input type="text" id="username" placeholder="Введіть логін">
+        </div>
+
+        <div class="input-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" placeholder="Введіть пароль">
+        </div>
+
+        <!-- Кнопка для входу -->
+        <button class="btn" onclick="login()">Увійти</button>
+
+        <!-- Посилання на реєстрацію -->
+        <a href="#" class="register-link" onclick="showRegisterForm()">Зареєструватися</a>
+
+        <!-- Повернення на головну сторінку -->
+        <a href="index.html" class="back-to-home">На головну сторінку</a>
+    </div>
+
+    <!-- Контейнер для реєстрації -->
+    <div class="register-container" id="registerContainer">
+        <h2>Реєстрація</h2>
+        
+        <!-- Форма для реєстрації -->
+        <div class="input-group">
+            <label for="newUsername">Логін</label>
+            <input type="text" id="newUsername" placeholder="Введіть логін">
+        </div>
+
+        <div class="input-group">
+            <label for="newPassword">Пароль</label>
+            <input type="password" id="newPassword" placeholder="Введіть пароль">
+        </div>
+
+        <div class="input-group">
+            <label for="confirmPassword">Підтвердження пароля</label>
+            <input type="password" id="confirmPassword" placeholder="Підтвердіть пароль">
+        </div>
+
+        <!-- Кнопка для реєстрації -->
+        <button class="btn" onclick="register()">Зареєструватися</button>
+
+        <!-- Повернення до форми авторизації -->
+        <a href="#" class="back-to-home" onclick="showLoginForm()">До форми авторизації</a>
+    </div>
+
+    <script>
+        // Моделюємо базу даних користувачів (логіни та паролі)
+        const users = [
+            { username: 'admin', password: 'romsat2303', role: 'admin' },
+            { username: 'den', password: 'darunka15', role: 'user' }
+        ];
+
+        // Функція для авторизації
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Перевіряємо чи є користувач в масиві користувачів
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                // Якщо користувач знайдений, зберігаємо інформацію про нього в localStorage
+                localStorage.setItem('user', JSON.stringify(user));
+
+                // Перенаправляємо на відповідну сторінку
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';  // Перехід на сторінку адміністратора
+                } else {
+                    window.location.href = 'index.html';  // Перехід на сторінку користувача
+                }
+            } else {
+                // Якщо авторизація не вдалася
+                alert('Невірний логін або пароль');
+            }
+        }
+
+        // Функція для реєстрації
+        function register() {
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Перевірка на те, чи пароль і підтвердження пароля співпадають
+            if (newPassword !== confirmPassword) {
+                alert('Паролі не співпадають!');
+                return;
+            }
+
+            // Перевірка чи існує вже користувач з таким логіном
+            const existingUser = users.find(u => u.username === newUsername);
+            if (existingUser) {
+                alert('Такий логін вже існує!');
+                return;
+            }
+
+            // Додаємо нового користувача в базу даних
+            users.push({ username: newUsername, password: newPassword, role: 'user' });
+
+            // Повідомляємо користувача про успішну реєстрацію
+            alert('Реєстрація успішна! Тепер ви можете увійти.');
+
+            // Повертаємось до форми авторизації
+            showLoginForm();
+        }
+
+        // Функція для показу форми реєстрації
+        function showRegisterForm() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'block';
+        }
+
+        // Функція для показу форми авторизації
+        function showLoginForm() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('registerContainer').style.display = 'none';
+        }
+
+       
+        
+    </script>
+
+</body>
+</html>

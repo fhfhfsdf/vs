@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Активні Замовлення</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #2980b9;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #1f5f7b;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-table th, .order-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .order-table td {
+            background-color: white;
+        }
+
+        .footer {
+            background-color: #2980b9;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Заголовок -->
+    <div class="header">
+        Активні Замовлення
+    </div>
+
+    <!-- Навігаційна панель -->
+    <div class="navbar">
+        <a href="index.html">Головна</a>
+        <a href="product1.html">Товари</a>
+        <a href="order.html">Замовлення</a>
+        <a href="index.html" onclick="logout()">Вийти</a>
+    </div>
+
+    <!-- Контент -->
+    <div class="content">
+        <h2>Список Активних Замовлень</h2>
+
+        <!-- Таблиця замовлень -->
+        <table class="order-table" id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Ім'я клієнта</th>
+                    <th>Електронна пошта</th>
+                    <th>Телефон</th>
+                    <th>Товар</th>
+                    <th>Кількість</th>
+                    <th>Загальна сума</th>
+                    <th>Дата замовлення</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Замовлення будуть додаватися сюди за допомогою JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Футер -->
+    <div class="footer">
+        © 2025 Інтернет Магазин - Всі права захищені
+    </div>
+
+    <script>
+        // Функція для відображення активних замовлень
+        function displayActiveOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const ordersTableBody = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+
+            // Очищаємо таблицю перед виведенням нових замовлень
+            ordersTableBody.innerHTML = '';
+
+            // Додаємо кожне замовлення в таблицю
+            orders.forEach(order => {
+                const orderRow = document.createElement('tr');
+                
+                // Заповнюємо дані замовлення
+                orderRow.innerHTML = `
+                    <td>${order.fullName}</td>
+                    <td>${order.email}</td>
+                    <td>${order.phone}</td>
+                    <td>${order.productName}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.total} грн</td>
+                    <td>${order.date}</td>
+                `;
+
+                // Додаємо рядок до таблиці
+                ordersTableBody.appendChild(orderRow);
+            });
+        }
+
+        // Викликаємо функцію при завантаженні сторінки
+        window.onload = displayActiveOrders;
+
+        // Функція для виходу
+        function logout() {
+            localStorage.removeItem('user');
+            alert("Ви вийшли з системи");
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

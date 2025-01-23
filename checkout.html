@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформлення замовлення | Vape SHOT</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Основні стилі для сторінки оформлення замовлення */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .checkout-container {
+            width: 80%;
+            max-width: 1200px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .checkout-header h2 {
+            font-size: 2em;
+            color: #2ecc71;  /* Зеленуватий колір */
+        }
+
+        .checkout-header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        /* Кнопка повернення */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;  /* Переміщено на праву сторону */
+            width: 40px;
+            height: 40px;
+            background-color: #e74c3c;  /* Червоний фон */
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;  /* Кругла форма */
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #c0392b;  /* Темніший відтінок червоного при наведенні */
+        }
+
+        /* Стилі для таблиці кошика */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-table th {
+            background-color: #2ecc71;  /* Зеленуватий фон для заголовків */
+            color: #fff;
+        }
+
+        .cart-table td {
+            background-color: #f9f9f9;
+        }
+
+        .cart-item-image {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+
+        /* Стилі для форми оформлення замовлення */
+        .checkout-details form {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkout-details label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2ecc71;
+        }
+
+        .checkout-details input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            background-color: #f4f4f4;
+            color: #333;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .checkout-details button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background-color: #2ecc71;  /* Зеленуватий фон */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-details button:hover {
+            background-color: #27ae60;  /* Темніший відтінок зеленого */
+        }
+
+        /* Стиль для суми замовлення */
+        .total-amount {
+            font-size: 1.5em;
+            color: #2ecc71;
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Кнопка повернення -->
+    <a href="javascript:history.back()" class="back-button">&times;</a>
+    
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h2>Оформлення замовлення</h2>
+            <p>Перевірте ваші дані та підтвердіть замовлення</p>
+        </div>
+        
+        <div class="checkout-details">
+            <h3>Інформація про товар</h3>
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Продукт</th>
+                        <th>Ціна</th>
+                        <th>Кількість</th>
+                        <th>Сума</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Дані про товари будуть додаватися тут через JavaScript -->
+                </tbody>
+            </table>
+
+            <h3>Ваші дані для доставки</h3>
+            <form id="checkoutForm">
+                <label for="name">Ім'я:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Електронна пошта:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="address">Адреса доставки:</label>
+                <input type="text" id="address" name="address" required>
+                
+                <label for="phone">Телефон:</label>
+                <input type="tel" id="phone" name="phone" required>
+                
+                <button type="submit" class="checkout-button">Підтвердити замовлення</button>
+            </form>
+
+            <div class="total-amount">
+                Загальна сума: <span id="totalAmount">0 грн</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функція для оновлення кошика на сторінці оформлення замовлення
+        function updateCheckout() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartTable = document.querySelector(".cart-table tbody");
+            cartTable.innerHTML = "";  // Очищаємо таблицю перед додаванням
+
+            let totalPrice = 0;
+
+            cartItems.forEach(item => {
+                const row = document.createElement('tr');
+
+                // Додаємо дані про товар
+                row.innerHTML = `
+                    <td><img src="${item.imageUrl}" alt="${item.name}" class="cart-item-image"> ${item.name}</td>
+                    <td>${item.price} грн</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price * item.quantity} грн</td>
+                `;
+
+                cartTable.appendChild(row);
+
+                totalPrice += item.price * item.quantity;
+            });
+
+            // Оновлюємо загальну суму
+            document.getElementById('totalAmount').textContent = totalPrice + " грн";
+        }
+
+        // Початкове оновлення кошика при завантаженні сторінки
+        updateCheckout();
+    </script>
+</body>
+</html>

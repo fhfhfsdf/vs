@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Избрані  | Vape Shop</title>
+    <style>
+        /* Загальні стилі */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff; /* Білий фон */
+            color: #333333; /* Темно-сірий текст */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Заголовок */
+        .header {
+            background-color: #2ecc71; /* Зеленуватий фон */
+            color: #ffffff; /* Білий текст */
+            padding: 20px;
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Статична кнопка повернення на попередню сторінку */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e74c3c; /* Червоний фон */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.8em;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+            z-index: 9999; /* Встановлюємо найвищий порядок накладання */
+        }
+
+        .back-button:hover {
+            background-color: #c0392b; /* Темніший червоний при наведенні */
+        }
+
+        /* Контейнер для контенту */
+        .container {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Секція улюблених товарів */
+        .favorites-section {
+            width: 80%;
+            max-width: 1000px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background-color: #f9f9f9; /* Світло-сірий фон */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .favorites-section h2 {
+            color: #2ecc71; /* Зеленуватий заголовок */
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        /* Контейнер для карток товарів */
+        .favorites-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .product-card h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-card .price {
+            font-size: 1.3em;
+            color: #2ecc71;
+            margin-bottom: 20px;
+        }
+
+        .product-card .remove-favorite {
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .product-card .remove-favorite:hover {
+            background-color: #c0392b;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Кнопка повернення на попередню сторінку (статична) -->
+    <button class="back-button" onclick="goBack()">&#10005;</button>
+
+    <!-- Заголовок -->
+    <div class="header">
+        Избрані
+    </div>
+
+    <!-- Контейнер -->
+    <div class="container">
+        
+        <!-- Секція улюблених товарів -->
+        <div class="favorites-section" id="favoritesSection">
+            <h2>Ваші избрані товари</h2>
+
+            <!-- Контейнер для карток товарів -->
+            <div class="favorites-container" id="favoritesContainer">
+                <!-- Товари будуть додаватися тут через JavaScript -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Функція для повернення на попередню сторінку
+        function goBack() {
+            window.history.back();
+        }
+
+        // Збереження і завантаження улюблених товарів з localStorage
+        function loadFavorites() {
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            const container = document.getElementById('favoritesContainer');
+
+            // Якщо улюблені товари є
+            if (favorites.length > 0) {
+                container.innerHTML = '';
+                favorites.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('product-card');
+
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p class="price">${product.price} грн</p>
+                        <button class="remove-favorite" onclick="removeFromFavorites('${product.name}')">Видалити</button>
+                    `;
+
+                    container.appendChild(productCard);
+                });
+            } else {
+                container.innerHTML = '<p>Ви ще не додали жодного товару в избрані.</p>';
+            }
+        }
+
+        // Функція для видалення товару з улюбленого
+        function removeFromFavorites(productName) {
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            favorites = favorites.filter(product => product.name !== productName);
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadFavorites(); // Оновлюємо список
+        }
+
+        // Завантаження улюблених товарів при завантаженні сторінки
+        window.onload = loadFavorites;
+    </script>
+
+</body>
+</html>

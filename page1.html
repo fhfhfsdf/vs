@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додати товар</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #2ecc71;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .add-product-form {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .add-product-form input,
+        .add-product-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .add-product-form button {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-product-form button:hover {
+            background-color: #27ae60;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .back-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Додати новий товар
+    </div>
+
+    <!-- Форма для додавання нового товару -->
+    <div class="add-product-form">
+        <input type="text" id="product-name" placeholder="Назва товару" />
+        <input type="number" id="product-price" placeholder="Ціна товару" />
+        <input type="url" id="product-image" placeholder="URL фото товару" />
+        <textarea id="product-description" placeholder="Опис товару"></textarea>
+        <button onclick="addNewProduct()">Додати товар</button>
+    </div>
+
+    <a href="index.html" class="back-button">Повернутися на головну</a>
+
+    <script>
+        // Функція для додавання товару
+        function addNewProduct() {
+            const name = document.getElementById('product-name').value;
+            const price = document.getElementById('product-price').value;
+            const image = document.getElementById('product-image').value;
+            const description = document.getElementById('product-description').value;
+
+            if (name && price && image && description) {
+                const product = {
+                    name,
+                    price,
+                    image,
+                    description
+                };
+
+                // Отримуємо поточні товари з localStorage
+                let products = JSON.parse(localStorage.getItem('products')) || [];
+                products.push(product);
+
+                // Зберігаємо оновлений список товарів в localStorage
+                localStorage.setItem('products', JSON.stringify(products));
+
+                // Перехід на головну сторінку
+                window.location.href = 'index.html';
+            } else {
+                alert("Будь ласка, заповніть всі поля!");
+            }
+        }
+    </script>
+
+</body>
+</html>

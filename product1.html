@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Керування товарами</title>
+    <style>
+        /* Загальні стилі */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .header {
+            background-color: #27ae60;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 20px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+
+        .product-form {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-form h3 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #333;
+        }
+
+        .product-form input,
+        .product-form textarea,
+        .product-form select,
+        .product-form button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .product-form button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .product-form button:hover {
+            background-color: #2ecc71;
+        }
+
+        .product-list {
+            max-width: 1000px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .product-card h4 {
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .product-card p {
+            color: #555;
+        }
+
+        .product-card button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .product-card button:hover {
+            background-color: #c0392b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            font-size: 30px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #e74c3c;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #c0392b;
+        }
+
+        /* Стиль для попередження перед видаленням */
+        .confirm-delete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+        }
+
+        .confirm-delete-content {
+            background-color: white;
+            padding: 30px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .confirm-delete-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .confirm-delete-button:hover {
+            background-color: #c0392b;
+        }
+
+        .cancel-delete-button {
+            background-color: #ccc;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .cancel-delete-button:hover {
+            background-color: #b3b3b3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Кнопка повернення до admin.html -->
+    <a href="admin.html">
+        <button class="back-button">Повернутися до панелі адміністратора</button>
+    </a>
+
+    <!-- Заголовок -->
+    <div class="header">
+        Керування товарами
+    </div>
+
+    <!-- Форма для додавання/редагування товару -->
+    <div class="product-form">
+        <h3>Додати або редагувати товар</h3>
+        <form id="productForm" onsubmit="handleFormSubmit(event)">
+            <input type="text" id="productName" placeholder="Назва товару" required>
+            <input type="number" id="productPrice" placeholder="Ціна (грн)" required>
+            <textarea id="productDescription" placeholder="Опис товару" rows="4" required></textarea>
+            <input type="file" id="productImage" accept="image/*">
+            <select id="productCategory" required>
+                <option value="e-liquid">Рідини</option>
+                <option value="vapes">Пристрої</option>
+                <option value="accessories">Аксесуари</option>
+            </select>
+            <button type="submit">Зберегти товар</button>
+        </form>
+    </div>
+
+    <!-- Секція для відображення списку товарів -->
+    <div class="product-list" id="productList">
+        <!-- Сюди будуть додаватися картки товарів -->
+    </div>
+
+    <!-- Модальне вікно для редагування товару -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">×</span>
+            <h3>Редагувати товар</h3>
+            <form id="editProductForm" onsubmit="handleEditFormSubmit(event)">
+                <input type="text" id="editProductName" placeholder="Назва товару" required>
+                <input type="number" id="editProductPrice" placeholder="Ціна (грн)" required>
+                <textarea id="editProductDescription" placeholder="Опис товару" rows="4" required></textarea>
+                <input type="file" id="editProductImage" accept="image/*">
+                <select id="editProductCategory" required>
+                    <option value="e-liquid">Рідини</option>
+                    <option value="vapes">Пристрої</option>
+                    <option value="accessories">Аксесуари</option>
+                </select>
+                <button type="submit">Зберегти зміни</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальне вікно для підтвердження видалення -->
+    <div class="confirm-delete-modal" id="confirmDeleteModal">
+        <div class="confirm-delete-content">
+            <h3>Ви дійсно хочете видалити цей товар?</h3>
+            <button class="confirm-delete-button" onclick="deleteProduct()">Так</button>
+            <button class="cancel-delete-button" onclick="closeDeleteModal()">Ні</button>
+        </div>
+    </div>
+
+    <script>
+        // Завантажуємо список товарів з localStorage
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+
+        // Функція для додавання/редагування товару
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const description = document.getElementById('productDescription').value;
+            const image = document.getElementById('productImage').files[0];  // Фото не є обов'язковим
+            const category = document.getElementById('productCategory').value;
+
+            // Якщо фото не вибрано, використаємо стандартне зображення
+            const imageUrl = image ? URL.createObjectURL(image) : 'default-image.jpg'; // Стандартне фото
+
+            const product = {
+                id: Date.now(),
+                name,
+                price,
+                description,
+                category,
+                image: imageUrl // Якщо фото немає, використовуємо стандартне
+            };
+
+            // Додаємо товар до масиву
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products)); // Зберігаємо в localStorage
+            displayProducts();
+            document.getElementById('productForm').reset();
+        }
+
+        // Функція для відображення товарів
+        function displayProducts() {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h4>${product.name}</h4>
+                    <p>${product.description}</p>
+                    <p><strong>Ціна:</strong> ${product.price} грн</p>
+                    <p><strong>Категорія:</strong> ${product.category}</p>
+                    <button onclick="confirmDelete(${index})">Видалити</button>
+                    <button onclick="openEditModal(${index})">Редагувати</button>
+                `;
+                productList.appendChild(productCard);
+            });
+        }
+
+        // Функція для підтвердження видалення товару
+        function confirmDelete(index) {
+            const confirmationModal = document.getElementById('confirmDeleteModal');
+            confirmationModal.style.display = 'flex';
+
+            // Зберігаємо індекс товару для видалення
+            window.deleteIndex = index;
+        }
+
+        // Функція для закриття модального вікна видалення
+        function closeDeleteModal() {
+            const confirmationModal = document.getElementById('confirmDeleteModal');
+            confirmationModal.style.display = 'none';
+        }
+
+        // Функція для видалення товару
+        function deleteProduct() {
+            products.splice(window.deleteIndex, 1); // Видаляємо товар з масиву
+            localStorage.setItem('products', JSON.stringify(products)); // Оновлюємо localStorage
+            displayProducts(); // Оновлюємо список товарів
+            closeDeleteModal(); // Закриваємо модальне вікно
+        }
+
+        // Функція для відкриття модального вікна для редагування товару
+        function openEditModal(index) {
+            const product = products[index];
+
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductPrice').value = product.price;
+            document.getElementById('editProductDescription').value = product.description;
+            document.getElementById('editProductCategory').value = product.category;
+
+            // Встановлюємо модальне вікно
+            document.getElementById('editModal').style.display = 'flex';
+
+            // Зберігаємо ID товару для редагування
+            document.getElementById('editProductForm').dataset.productIndex = index;
+        }
+
+        // Функція для закриття модального вікна редагування
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Функція для збереження змін товару після редагування
+        function handleEditFormSubmit(event) {
+            event.preventDefault();
+
+            const index = event.target.dataset.productIndex;
+            const name = document.getElementById('editProductName').value;
+            const price = document.getElementById('editProductPrice').value;
+            const description = document.getElementById('editProductDescription').value;
+            const image = document.getElementById('editProductImage').files[0];
+            const category = document.getElementById('editProductCategory').value;
+
+            const imageUrl = image ? URL.createObjectURL(image) : products[index].image;
+
+            products[index] = {
+                ...products[index],
+                name,
+                price,
+                description,
+                category,
+                image: imageUrl
+            };
+
+            localStorage.setItem('products', JSON.stringify(products));
+            displayProducts();
+            closeEditModal();
+        }
+
+        // Початковий виклик для відображення товарів
+        displayProducts();
+    </script>
+</body>
+</html>
